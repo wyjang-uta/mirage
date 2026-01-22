@@ -2,7 +2,7 @@
 # Setup the project
 #
 cmake_minimum_required(VERSION 3.16...3.27)
-project(dipole_defocus)
+project(mirage)
 
 # settings for dunegpvm spack environment
 set(EXPAT_INCLUDE_DIR "/usr/include")
@@ -24,28 +24,28 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, use our local headers, and link it to the Geant4 libraries
 #
-add_executable(dipole_defocus dipole_defocus.cc ${sources} ${headers})
-target_include_directories(dipole_defocus PRIVATE include)
-target_link_libraries(dipole_defocus PRIVATE ${Geant4_LIBRARIES})
+add_executable(mirage mirage.cc ${sources} ${headers})
+target_include_directories(mirage PRIVATE include)
+target_link_libraries(mirage PRIVATE ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
-# build dipole_defocus. This is so that we can run the executable directly because it
+# build mirage. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(DIPOLE_DEFOCUS_MACROS
+set(MIRAGE_MACROS
   macros/init_vis.mac
   macros/run1.mac
   macros/run2.mac
   macros/vis.mac
   )
 
-set(DIPOLE_DEFOCUS_SCRIPTS
+set(MIRAGE_SCRIPTS
   scripts/agent.sh
   scripts/submit_grid.sh
   )
 
-foreach(_script ${DIPOLE_DEFOCUS_SCRIPTS})
+foreach(_script ${MIRAGE_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}
     ${PROJECT_BINARY_DIR}/${_script}
@@ -53,7 +53,7 @@ foreach(_script ${DIPOLE_DEFOCUS_SCRIPTS})
     )
 endforeach()
 
-foreach(_macro ${DIPOLE_DEFOCUS_MACROS})
+foreach(_macro ${MIRAGE_MACROS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_macro}
     ${PROJECT_BINARY_DIR}/${_macro}
@@ -68,14 +68,14 @@ endif()
 set(SHARE_DIR "share/dune_mixedpol/dipole")
 
 # 2. installation of binary files
-install(TARGETS dipole_defocus DESTINATION bin)
+install(TARGETS mirage DESTINATION bin)
 
 # 3. installation of macro files
-install(FILES ${DIPOLE_DEFOCUS_MACROS}
+install(FILES ${MIRAGE_MACROS}
   DESTINATION ${SHARE_DIR}/macros)
 
 # 4. installation of script files
-install(FILES ${DIPOLE_DEFOCUS_SCRIPTS}
+install(FILES ${MIRAGE_SCRIPTS}
   DESTINATION ${SHARE_DIR}/scripts
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
