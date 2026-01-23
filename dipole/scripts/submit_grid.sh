@@ -1,33 +1,48 @@
 #!/bin/bash
 
+MAG_FIELD=1.5
+RUN_NUM=2
+NSUBRUNS=100
+
 # Submit a job to the grid
 
 BASE_APP_DIR="/exp/dune/app/users/wyjang"
-#BASE_DATA_DIR="/exp/dune/data/users/wyjang"
-BASE_DATA_DIR="/pnfs/dune/scratch/users/wyjang/dune_mixedpol/dipole"
-
-EXE_PATH="$BASE_APP_DIR/bin/dipole_defocus"
-MACRO_FILE="$BASE_APP_DIR/share/dune_mixedpol/dipole/macros/run1.mac"
-OUTPUT_DATA_DIR="$BASE_DATA_DIR/dune_mixedpol/dipole"
-MAG_FIELD=3.0
+EXE_FILE="$BASE_APP_DIR/bin/dipole_defocus"
+MACRO_FILE="$BASE_APP_DIR/share/dune_mixedpol/dipole/macros/POT_100k.mac"
+OUTPUT_DATA_DIR="$BASE_DATA_DIR/dune_mixedpol/dipole/run${RUN_NUM}"
 
 ifdh mkdir_p $OUTPUT_DATA_DIR
-for RUN_NUM in {1..100}
-do
-    SEED=$((RUN_NUM))
-    OUTPUT_FILE="result_${RUN_NUM}_${SEED}_${MAG_FIELD}.root"
+OUTPUT_FILE="result_${RUN_NUM}_${SEED}_${MAG_FIELD}.root"
 
-    echo "Submitting Run $RUN_NUM with seed $SEED ..."
+echo "Preparing job assets ... "
+ASSET_FILE_NAME="scripts_$(date +%Y%m%d_%H%M).tar.gz"
+echo "Target: ${ASSET_FILE_NAME}"
+echo "📦 Packing your scripts into a suitcase ($ASSET_FILE_NAME)..."
+tar -cvzf $ASSET_FILE_NAME -C $EXE_FILE -C $MACRO_FILE
 
-    jobsub_submit -N 1 \
-    --memory=2000MB \
-    --disk=1000MB \
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to create tarball."
+    exit 1
+fi
+
+# 3. Compression result
+COMP_SIZE=$(du -k "$ASSET_FILE_NAME" | awk '{print $1}')
+
+# 4. 결과 출력 및 비교
+echo "-------------------------------------------------------"
+echo "✅ Tarball creation successful!"
+echo "📊 Original size: ${ORIG_SIZE} KB"
+echo "📊 Compressed size: ${COMP_SIZE} KB"
+echo "📉 Compression ratio: $(awk "BEGIN {printf \"%.2f\", $COMP_SIZE/$ORIG_SIZE*100}")%"
+echo "-------------------------------------------------------"
+
+echo "🚀 Handing over the suitcase to the grid. -- Submitting Run $RUN_NUM with $NSUBRUNS subruns ... "
+jobsub_submit -N $NSUBRUNS \
+    --memory=1000MB \
+    --disk=500MB \
     --expected-lifetime=8h \
     --group=dune \
     --resource-provides=usage_model=OPPORTUNISTIC,DEDICATED \
-    -f dropbox://$EXE_PATH \
-    -f dropbox://$MACRO_FILE \
+    --tar_file_name dropbox://$(pwd)/$ASSET_FILE_NAME
     file:///exp/dune/app/users/wyjang/share/dune_mixedpol/dipole/scripts/agent.sh \
-    $MAG_FIELD $SEED $OUTPUT_FILE $OUTPUT_DATA_DIR
-
-done
+    $MAG_FIELD $RUN_NUM $NSUBRUNS

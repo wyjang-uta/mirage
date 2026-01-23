@@ -2,9 +2,12 @@
 
 # parse arguments from jobsub
 MAG_FIELD=$1
-SEED=$2
-OUTPUT_FILE=$3
-OUTPUT_DIR=$4
+RUN_NUM=$2
+NSUBRUNS=$3
+
+BASE_DATA_DIR="/pnfs/dune/scratch/users/wyjang/dune_mixedpol/dipole"
+SEED=$((RUN_NUM * 1000 + PROCESS))
+OUTPUT_FILE="result_${RUN_NUM}_${SEED}_${MAG_FIELD}.root"
 
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 source /cvmfs/larsoft.opensciencegrid.org/spack-packages/setup-env.sh
@@ -21,8 +24,8 @@ chmod +x ./dipole_defocus
 ./dipole_defocus ./run1.mac $MAG_FIELD $SEED $HOME/$OUTPUT_FILE
 
 if [ -f "$HOME/$OUTPUT_FILE" ]; then
-    echo "Transferring $OUTPUT_FILE to $OUTPUT_DIR..."
-    ifdh cp $HOME/$OUTPUT_FILE ${OUTPUT_DIR}/${OUTPUT_FILE}
+    echo "Transferring $OUTPUT_FILE to $BASE_DATA_DIR..."
+    ifdh cp $HOME/$OUTPUT_FILE ${BASE_DATA_DIR}/${OUTPUT_FILE}
 else
     echo "Error: Output file $HOME/$OUTPUT_FILE not found!"
     exit 1
