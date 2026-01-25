@@ -52,6 +52,12 @@ set(MIRAGE_MACROS
 set(MIRAGE_SCRIPTS
   scripts/agent.sh
   scripts/submit_grid.sh
+  scripts/agent_ana.sh
+  scripts/submit_grid_ana.sh
+  )
+
+set(MIRAGE_ANALYZER
+  analyzer/mirage_plot.C
   )
 
 foreach(_script ${MIRAGE_SCRIPTS})
@@ -70,6 +76,13 @@ foreach(_macro ${MIRAGE_MACROS})
   )
 endforeach()
 
+foreach(_analyzer ${MIRAGE_ANALYZER})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/${_analyzer}
+    ${PROJECT_BINARY_DIR}/${_analyzer}
+    COPYONLY
+  )
+endforeach()
 
 # 2. installation of binary files
 install(TARGETS mirage DESTINATION bin)
@@ -83,3 +96,8 @@ install(FILES ${MIRAGE_SCRIPTS}
   DESTINATION ${SHARE_DIR}/scripts
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
+
+install(FILES ${MIRAGE_ANALYZER}
+  DESTINATION ${SHARE_DIR}/analyzer
+  PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)

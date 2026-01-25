@@ -6,7 +6,7 @@ NSUBRUNS=100
 
 # Submit a job to the grid
 BASE_APP_DIR="/exp/dune/app/users/wyjang"
-BASE_DATA_DIR="/pnfs/dune/scratch/users/wyjang/dune/mirage/dipole"
+BASE_DATA_DIR="/pnfs/dune/scratch/users/wyjang/dune/mirage/dipole/run${RUN_NUM}"
 EXE_FILE="$BASE_APP_DIR/bin/mirage"
 MACRO_FILE="$BASE_APP_DIR/share/dune/mirage/dipole/macros/POT_100k.mac"
 OUTPUT_DATA_DIR="$BASE_DATA_DIR/run${RUN_NUM}"

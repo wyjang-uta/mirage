@@ -5,7 +5,10 @@
 #include "TH2D.h"
 
 void mirage_plot(std::string inputFile="input.root", std::string outputFile="output.root"){
-    ROOT::RDataFrame df("mirage", inputFile);
+    TFile* f = TFile::Open(inputFile.c_str());
+    if (!f || f->IsZombie()) return;
+    TString treeName = f->GetListOfKeys()->At(0)->GetName();
+    ROOT::RDataFrame df(treeName, inputFile);
 
     auto df_valid = df.Filter("daughterE > 0");
 
