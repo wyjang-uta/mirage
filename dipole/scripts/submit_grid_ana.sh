@@ -5,10 +5,10 @@
 RUN_NUM=2
 NSUBRUNS=100
 # Set the base directory
-APP_DIR="/exp/dune/app/users/wyjang"
-BASE_DIR="$APP_DIR/dune/mirage/dipole"
-ROOT_DATA_DIR="/exp/dune/data/users/wyjang/dune/mirage/dipole/run${RUN_NUM}"
-ANALYZER_SCRIPT_FILE="$APP_DIR/share/dune/mirage/dipole/analyzer/mirage_plot.C"
+ABS_PATH="$(cd .. && pwd -P)"
+ANALYZER_SCRIPT_FILE="$ABS_PATH/analyzer/mirage_plot.C"
+echo $ABS_PATH
+echo $ANALYZER_SCRIPT_FILE
 
 jobsub_submit -N $NSUBRUNS \
     --memory=1000MB \
@@ -17,5 +17,5 @@ jobsub_submit -N $NSUBRUNS \
     --group=dune \
     --resource-provides=usage_model=OPPORTUNISTIC,DEDICATED \
     -f dropbox://$ANALYZER_SCRIPT_FILE \
-    file://$APP_DIR/share/dune/mirage/dipole/scripts/agent_ana.sh \
+    file://$ABS_PATH/scripts/agent_ana.sh \
     $RUN_NUM $(basename $ANALYZER_SCRIPT_FILE)

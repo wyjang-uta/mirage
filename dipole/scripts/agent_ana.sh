@@ -20,13 +20,14 @@ MAG_FIELD=$(echo "$FILENAME" | cut -d'_' -f4 | sed 's/.root//')
 XROOTD_URL="root://fndca1.fnal.gov:1094//pnfs/fnal.gov/usr/dune/persistent/users/wyjang/dune/mirage/dipole/run$RUN_NUM/result_${RUN_NUM}_${SEED}_${MAG_FIELD}.root"
 INPUT_FILE="${XROOTD_URL}"
 OUTPUT_FILE="anaout_${RUN_NUM}_${SEED}_${MAG_FIELD}.root"
-PNFS_DEST_DIR="/pnfs/dune/scratch/users/wyjang/dune/mirage/dipole/run$RUN_NUM/anaout/"
+PNFS_DEST_DIR="/pnfs/dune/scratch/users/$USER/dune/mirage/dipole/run$RUN_NUM/anaout/"
 
 cd ${CONDOR_DIR_INPUT}
 time root -b -q -l "${ANALYZER_SCRIPT_FILE}(\"${INPUT_FILE}\", \"${OUTPUT_FILE}\")"
 
 if [ -f "${OUTPUT_FILE}" ]; then
     echo "Transferring $OUTPUT_FILE to $PNFS_DEST_DIR ... "
+    ifdh mkdir -p "${PNFS_DEST_DIR}"
     ifdh cp -D $OUTPUT_FILE $PNFS_DEST_DIR
 else
     echo "Error: Output file $OUTPUT_FILE not found!"

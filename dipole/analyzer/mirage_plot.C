@@ -22,6 +22,21 @@ void mirage_plot(std::string inputFile="input.root", std::string outputFile="out
         "projXat574m", "projYat574m"
     );
 
+    auto h_profile_100m_x_100m = df_valid.Histo2D(
+        {"h_profile_100m_x_100m", "Neutrino Profile at ND(574 m); x [mm]; y [mm]", 500, -50000, 50000, 500, -50000, 50000},
+        "projXat574m", "projYat574m"
+    );
+
+    auto h_profile_10000m_x_10000m = df_valid.Histo2D(
+	{"h_profile_10000m_x_10000m", "Neutrino Profile at ND(574 m); x [mm]; y [mm]", 500, -5000000, 5000000, 500, -5000000, 5000000},
+	"projXat574m", "projYat574m"
+    );
+
+    auto h_profile_1000000m_x_1000000m = df_valid.Histo2D(
+	{"h_profile_1000000m_x_1000000m", "Neutrino Profile at ND(574 m); x [mm]; y [mm]", 500, -500000000, 500000000, 500, -500000000, 500000000},
+        "projXat574m", "projYat574m"
+    );
+
     TFile out(outputFile.c_str(), "RECREATE");
     h_energy->Write();
     h_profile->Write();
