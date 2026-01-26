@@ -12,6 +12,7 @@ spack load ifdhc@${IFDHC_VER}%${COMPILER_SPEC} ${ARCH_SPEC}; if [ $? -eq 0 ] ; t
 
 RUN_NUM=$1
 ANALYZER_SCRIPT_FILE=$2
+USER=$3
 SEED=$((RUN_NUM * 1000 + PROCESS))
 INPUT_BASE_DIR="/pnfs/dune/persistent/users/wyjang/dune/mirage/dipole/run$RUN_NUM"
 FULL_PATH=$(ifdh ls "$INPUT_BASE_DIR" | grep "result_${RUN_NUM}_${SEED}_" | head -n 1)

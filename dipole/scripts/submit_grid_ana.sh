@@ -9,6 +9,7 @@ ABS_PATH="$(cd .. && pwd -P)"
 ANALYZER_SCRIPT_FILE="$ABS_PATH/analyzer/mirage_plot.C"
 echo $ABS_PATH
 echo $ANALYZER_SCRIPT_FILE
+USER=${USER}
 
 jobsub_submit -N $NSUBRUNS \
     --memory=1000MB \
@@ -18,4 +19,4 @@ jobsub_submit -N $NSUBRUNS \
     --resource-provides=usage_model=OPPORTUNISTIC,DEDICATED \
     -f dropbox://$ANALYZER_SCRIPT_FILE \
     file://$ABS_PATH/scripts/agent_ana.sh \
-    $RUN_NUM $(basename $ANALYZER_SCRIPT_FILE)
+    $RUN_NUM $(basename $ANALYZER_SCRIPT_FILE) $USER
