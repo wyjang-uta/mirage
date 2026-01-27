@@ -19,7 +19,7 @@ echo "Preparing job assets ... "
 ASSET_FILE_NAME="scripts_$(date +%Y%m%d_%H%M).tar.gz"
 echo "Target: ${ASSET_FILE_NAME}"
 echo "📦 Packing your scripts into a suitcase ($ASSET_FILE_NAME)..."
-tar -cvzf $ASSET_FILE_NAME -C $BASE_APP_DIR/bin mirage -C $BASE_APP_DIR/share/dune/mirage/dipole/macros POT_100k.mac
+tar -cvzf $ASSET_FILE_NAME -C $BASE_APP_DIR/bin $(basename $EXE_FILE) -C $BASE_APP_DIR/share/dune/mirage/dipole/macros $(basename $MACRO_FILE)
 
 if [ $? -ne 0 ]; then
     echo "Error: Failed to create tarball."
