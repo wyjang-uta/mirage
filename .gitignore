@@ -27,7 +27,6 @@ horn/build/run1.mac
 horn/build/
 exampleB1
 *.o
-*.out
 *.root
 *.rndm
 .vscode/
