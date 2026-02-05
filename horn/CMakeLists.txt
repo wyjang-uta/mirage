@@ -41,14 +41,28 @@ target_link_libraries(mirage_horn PRIVATE ${Geant4_LIBRARIES})
 # build MIRAGE. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(MIRAGE_HORN_SCRIPTS
-  mirage_horn.in
-  mirage_horn.out
-  init_vis.mac
-  run1.mac
-  run2.mac
-  vis.mac
-  )
+
+set(MIRAGE_MACROS
+    macros/init_vis.mac
+    macros/POT_10k.mac
+    macros/POT_100k.mac
+    macros/POT_1000k.mac
+    macros/run1.mac
+    macros/run2.mac
+    macros/vis.mac
+   )
+
+set(MIRAGE_HORN_SCRIPTS 
+    scripts/agent.sh
+    scripts/submit_grid.sh
+    scripts/agent_ana.sh
+    scripts/submit_grid_ana.sh
+    scripts/setup.sh
+   )
+
+set(MIRAGE_ANALYZER
+    analyzer/mirage_plot.C
+   )
 
 foreach(_script ${MIRAGE_HORN_SCRIPTS})
   configure_file(
@@ -57,3 +71,37 @@ foreach(_script ${MIRAGE_HORN_SCRIPTS})
     COPYONLY
     )
 endforeach()
+
+foreach(_macro ${MIRAGE_MACROS})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/${_macro}
+    ${PROJECT_BINARY_DIR}/${_macro}
+    COPYONLY
+  )
+endforeach()
+
+foreach(_analyzer ${MIRAGE_ANALYZER})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/${_analyzer}
+    ${PROJECT_BINARY_DIR}/${_analyzer}
+    COPYONLY
+  )
+endforeach()
+
+# 2. installation of binary files
+install(TARGETS mirage_horn DESTINATION bin)
+
+# 3. installation of macro files
+install(FILES ${MIRAGE_MACROS}
+  DESTINATION ${SHARE_DIR}/macros)
+
+# 4. installation of script files
+install(FILES ${MIRAGE_HORN_SCRIPTS}
+  DESTINATION ${SHARE_DIR}/scripts
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )
+
+install(FILES ${MIRAGE_ANALYZER}
+  DESTINATION ${SHARE_DIR}/analyzer
+  PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
